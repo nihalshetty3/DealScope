@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from app.core.config import settings
 from app.api.health import router as health_router
 from app.api.deals import router as deals_router
+from app.api.documents import router as documents_router
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -11,6 +12,8 @@ app = FastAPI(
 
 app.include_router(health_router)
 app.include_router(deals_router)
+app.include_router(documents_router)
+
 @app.get("/")
 def root():
     return{
