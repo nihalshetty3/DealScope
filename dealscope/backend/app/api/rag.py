@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
 from app.services.retrieval_service import search_similar_chunks
 from app.services.llm_service import generate_answer
+from app.services.rerank_service import rerank_chunks
 
 router = APIRouter(
     prefix="/rag",
@@ -29,7 +30,13 @@ def ask_question(
         db=db,
         deal_id=deal_id,
         query=question,
-        limit=5,
+        limit=20,
+    )
+    
+    chunks = rerank_chunks(
+        query=question,
+        chunks=chunks,
+        top_k=5,
     )
     
     answer = generate_answer(
@@ -45,6 +52,7 @@ def ask_question(
                 "document_id": chunk["document_id"],
                 "page_number": chunk["page_number"],
                 "chunk_index": chunk["chunk_index"],
+                "rerank_score": chunk["rerank_score"],
             }
             for chunk in chunks
         ],
