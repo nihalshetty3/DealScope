@@ -8,6 +8,8 @@ from app.db.database import SessionLocal
 from app.models.deal import Deal
 from app.models.document import Document
 from app.models.document_chunk import DocumentChunk
+from app.services.embedding_service import generate_embedding
+
 from app.services.document_service import (
     chunk_text,
     extract_text_from_pdf,
@@ -86,12 +88,17 @@ async def upload_document(
     chunks = chunk_text(pages)
 
     for chunk in chunks:
+        embedding = generate_embedding(
+            chunk["content"]
+        )
+        
         db_chunk = DocumentChunk(
             document_id=document.id,
             deal_id=deal_id,
             chunk_index=chunk["chunk_index"],
             content=chunk["content"],
             page_number=chunk["page_number"],
+            embedding = embedding,
         )
 
         db.add(db_chunk)

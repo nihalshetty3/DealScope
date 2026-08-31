@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import DateTime,ForeignKey,Integer,Text
 from sqlalchemy.orm import Mapped , mapped_column, relationship
+from pgvector.sqlalchemy import Vector
 
 from app.models.base import Base
 
@@ -31,6 +32,10 @@ class DocumentChunk(Base):
     page_number: Mapped[int | None] = mapped_column(
         Integer,
         nullable=True
+    )
+    embedding: Mapped[list[float] | None] = mapped_column(
+        Vector(1536),
+        nullable=True,
     )
     
     created_at: Mapped[datetime] = mapped_column(
