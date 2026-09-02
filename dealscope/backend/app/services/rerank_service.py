@@ -25,6 +25,7 @@ def rerank_chunks(
     for chunk, score in zip(chunks , scores):
         chunk = dict(chunk)
         chunk["rerank_score"]=float(score)
+        ranked_chunks.append(chunk)
         
     ranked_chunks.sort(
         key=lambda x: x["rerank_score"],
